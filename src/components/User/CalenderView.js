@@ -1,98 +1,41 @@
-// src/components/CalendarView.jsx
-import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import './CalendarView.css';
+import React from "react";
+import FullCalendar from "@fullcalendar/react"; // Import FullCalendar
+import dayGridPlugin from "@fullcalendar/daygrid"; // For month/day view
+import timeGridPlugin from "@fullcalendar/timegrid"; // For time grid view
+import interactionPlugin from "@fullcalendar/interaction"; // For drag and drop
+import "@fullcalendar/core/main.css";
+import "@fullcalendar/daygrid/main.css";
+import "@fullcalendar/timegrid/main.css";
 
-// Sample data for communications
-const communicationsData = [
-  {
-    companyName: 'Tech Innovators',
-    communications: [
-      { type: 'LinkedIn Post', date: '2024-09-05', notes: 'Initial outreach' },
-      { type: 'Phone Call', date: '2024-09-10', notes: 'Discussed project details' },
-      { type: 'Email', date: '2024-09-15', notes: 'Follow-up email' },
-      { type: 'LinkedIn Message', date: '2024-09-20', notes: 'Project update' },
-    ],
-  },
-  {
-    companyName: 'GreenTech',
-    communications: [
-      { type: 'LinkedIn Post', date: '2024-10-01', notes: 'Introduction to new project' },
-      { type: 'Email', date: '2024-10-05', notes: 'Project details' },
-      { type: 'Phone Call', date: '2024-10-10', notes: 'Call to discuss next steps' },
-    ],
-  },
-];
 
-const CalendarView = () => {
-  const [date, setDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
+function CalendarView() {
+    const handleDateClick = (info) => {
+        alert(`Date clicked: ${info.dateStr}`);
+    };
 
-  // Helper function to determine if a date has past or upcoming communication
-  const getCommunicationMarkers = () => {
-    const markers = [];
-    communicationsData.forEach((company) => {
-      company.communications.forEach((comm) => {
-        const commDate = new Date(comm.date);
-        markers.push({
-          date: commDate,
-          type: comm.type,
-          companyName: company.companyName,
-          notes: comm.notes,
-        });
-      });
-    });
-    return markers;
-  };
+    const events = [
+        { title: "Event 1", date: "2024-12-25" },
+        { title: "Event 2", date: "2024-12-31" },
+    ];
 
-  // Get all communication markers
-  const communicationMarkers = getCommunicationMarkers();
-
-  // Mark the selected date and show related communication data
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-  };
-
-  // Highlight dates with past or upcoming communications
-  const tileClassName = ({ date, view }) => {
-    if (view === 'month') {
-      const formattedDate = date.toISOString().split('T')[0];
-      const isCommunicationDate = communicationMarkers.some(
-        (marker) => marker.date.toISOString().split('T')[0] === formattedDate
-      );
-      return isCommunicationDate ? 'has-communication' : null;
-    }
-    return null;
-  };
-
-  return (
-    <div className="calendar-view-container">
-      <h2>Calendar View</h2>
-      <div className="calendar">
-        <Calendar
-          onChange={setDate}
-          value={date}
-          tileClassName={tileClassName}
-          onClickDay={handleDateClick}
-        />
-      </div>
-
-      {selectedDate && (
-        <div className="selected-date-details">
-          <h3>Communications on {selectedDate.toDateString()}</h3>
-          <ul>
-            {communicationMarkers
-              .filter((marker) => marker.date.toISOString().split('T')[0] === selectedDate.toISOString().split('T')[0])
-              .map((marker, index) => (
-                <li key={index}>
-                  <strong>{marker.type}</strong> ({marker.companyName}) - {marker.notes}
-                </li>
-              ))}
-          </ul>
+    return (
+        <div style={{ padding: "20px" }}>
+            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Calendar View</h1>
+            <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                editable={true} // Allow drag and drop
+                selectable={true} // Allow selecting dates
+                events={events} // Pass your events array
+                dateClick={handleDateClick} // Handle date click events
+                headerToolbar={{
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek,timeGridDay",
+                }}
+                height="auto" />
         </div>
-      )}
-    </div>
-  );
-};
+    );
+}
 
 export default CalendarView;

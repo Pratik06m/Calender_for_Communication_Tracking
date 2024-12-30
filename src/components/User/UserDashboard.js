@@ -1,6 +1,7 @@
 // src/components/UserDashboard.jsx
 import React, { useState } from 'react';
 import './UserDashboard.css';
+import { useNavigate } from "react-router-dom";
 
 // Sample data for companies and communications
 const sampleData = [
@@ -55,6 +56,15 @@ const UserDashboard = () => {
       date: '',
       notes: '',
     });
+  };
+
+  const navigate = useNavigate();
+  const handleNotificationClick = () => {
+    navigate("/notifications");
+  };
+
+  const handleCalendarClick = () => {
+    navigate("/calender");
   };
 
   // Helper function to check for overdue or due today communication
@@ -163,6 +173,21 @@ const UserDashboard = () => {
           </form>
         </div>
       )}
+
+      {/* Floating buttons */}
+      <div className="floating-buttons">
+        {/* Notification Button */}
+        <button className="floating-button notification-button" title="Notifications" onClick={handleNotificationClick}>
+          <i className="fas fa-bell"></i> {/* Font Awesome Notification Icon */}
+          <span className="notification-badge">5</span>
+        </button>
+
+
+        {/* Calendar Button */}
+        <button className="floating-button calendar-button" title="Calendar" onClick={handleCalendarClick} >
+          <i className="fas fa-calendar-alt"></i> {/* Font Awesome Calendar Icon */}
+        </button>
+      </div>
     </div>
   );
 };
