@@ -1,7 +1,5 @@
-// src/components/Admin/CompanyManagement.jsx
 import React, { useState } from "react";
-import './CompanyManagement.css'; // Make sure the path is correct
-
+import './CompanyManagement.css'; // Ensure the path is correct
 
 const CompanyManagement = () => {
   const [companies, setCompanies] = useState([]);
@@ -14,13 +12,37 @@ const CompanyManagement = () => {
     comments: "",
     periodicity: "2 weeks",
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(null);
+  const [error, setError] = useState("");
 
+  // Handle input change
   const handleInputChange = (e) => {
     setNewCompany({ ...newCompany, [e.target.name]: e.target.value });
   };
 
+  // Add or update a company
   const addCompany = () => {
-    setCompanies([...companies, newCompany]);
+    // Validate required fields
+    if (!newCompany.name || !newCompany.location || !newCompany.emails) {
+      setError("Name, Location, and Email are required!");
+      return;
+    }
+
+    // Clear error if validation passes
+    setError("");
+
+    if (isEditing) {
+      const updatedCompanies = companies.map((company, index) =>
+        index === currentIndex ? newCompany : company
+      );
+      setCompanies(updatedCompanies);
+      setIsEditing(false);
+      setCurrentIndex(null);
+    } else {
+      setCompanies([...companies, newCompany]);
+    }
+
     setNewCompany({
       name: "",
       location: "",
@@ -32,10 +54,24 @@ const CompanyManagement = () => {
     });
   };
 
+  // Edit a company
+  const editCompany = (index) => {
+    setIsEditing(true);
+    setCurrentIndex(index);
+    setNewCompany(companies[index]);
+  };
+
+  // Delete a company
+  const deleteCompany = (index) => {
+    const filteredCompanies = companies.filter((_, i) => i !== index);
+    setCompanies(filteredCompanies);
+  };
+
   return (
     <div>
       <h2>Company Management</h2>
       <div className="form">
+        {error && <p className="error-message">{error}</p>} {/* Display error */}
         <input
           type="text"
           name="name"
@@ -51,17 +87,17 @@ const CompanyManagement = () => {
           onChange={handleInputChange}
         />
         <input
-          type="url"
-          name="linkedIn"
-          placeholder="LinkedIn Profile"
-          value={newCompany.linkedIn}
-          onChange={handleInputChange}
-        />
-        <input
           type="email"
           name="emails"
           placeholder="Emails"
           value={newCompany.emails}
+          onChange={handleInputChange}
+        />
+        <input
+          type="url"
+          name="linkedIn"
+          placeholder="LinkedIn Profile"
+          value={newCompany.linkedIn}
           onChange={handleInputChange}
         />
         <input
@@ -86,14 +122,22 @@ const CompanyManagement = () => {
           <option value="2 weeks">2 Weeks</option>
           <option value="1 month">1 Month</option>
         </select>
-        <button onClick={addCompany}>Add Company</button>
+        <button onClick={addCompany}>
+          {isEditing ? "Update Company" : "Add Company"}
+        </button>
       </div>
       <div className="company-list">
         <h3>Companies</h3>
         <ul>
           {companies.map((company, index) => (
             <li key={index}>
-              {company.name} - {company.location}
+              <div>
+                <strong>{company.name}</strong> - {company.location}
+              </div>
+              <div className="EDbutton">
+                <button onClick={() => editCompany(index)}>Edit</button>
+                <button onClick={() => deleteCompany(index)}>Delete</button>
+              </div>
             </li>
           ))}
         </ul>

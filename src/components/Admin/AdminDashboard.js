@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import CompanyManagement from "./CompanyManagement";
 import CommunicationMethodManagement from "./CommunicationMethodManagement";
+import './AdminDashboard.css'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("companies");
