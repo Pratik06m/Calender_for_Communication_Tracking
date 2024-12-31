@@ -31,7 +31,7 @@ const styles = {
     marginRight: '20px',
   },
   navLink: {
-    color: '#fff',
+    color: '#1e1e2f',
     textDecoration: 'none',
     fontSize: '16px',
   },
