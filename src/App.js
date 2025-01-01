@@ -5,18 +5,22 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import UserDashboard from './components/User/UserDashboard';
 import Notifications from './components/User/Notifications';
 import CalendarView from './components/User/CalenderView';
+import LoginPage from './components/Login/Login';
+import ForgotPassword from './components/Login/ForgotPassword';
 
 const App = () => {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
+      <h1>Welcome to Calender Communication Tracker</h1>
       <div>
         <Routes>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user" element={<UserDashboard />} />
           <Route path='/notifications' element={<Notifications/>} />
           <Route path='/calender' element={<CalendarView/>} />
-          <Route path="/" element={<h1>Welcome to the Calendar App</h1>} />
+          <Route path="/" element={<LoginPage/>} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </div>
     </Router>
