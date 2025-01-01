@@ -1,4 +1,3 @@
-// src/components/Admin/CommunicationMethodManagement.jsx
 import React, { useState } from "react";
 import './CommunicationMethodManagement.css';
 
@@ -29,6 +28,11 @@ const CommunicationMethodManagement = () => {
   };
 
   const addMethod = () => {
+    if (!newMethod.name.trim()) {
+      alert("Method Name is required.");
+      return;
+    }
+  
     setMethods([
       ...methods,
       {
@@ -43,6 +47,7 @@ const CommunicationMethodManagement = () => {
       mandatory: false,
     });
   };
+  
 
   const handleDelete = (index) => {
     const updatedMethods = methods.filter((_, i) => i !== index);
@@ -69,13 +74,15 @@ const CommunicationMethodManagement = () => {
           onChange={handleInputChange}
         />
         <label>
-          Mandatory:
-          <input
+        <input
             type="checkbox"
             name="mandatory"
+            className="inputcheckbox"
             checked={newMethod.mandatory}
             onChange={handleInputChange}
           />
+          Mandatory
+          
         </label>
         <button onClick={addMethod}>Add Method</button>
       </div>
@@ -83,18 +90,16 @@ const CommunicationMethodManagement = () => {
       {/* List of communication methods */}
       <div className="method-list">
         <h3>Existing Communication Methods</h3>
-        <ul>
+        <div className="method-grid">
           {methods.map((method, index) => (
-            <li key={index}>
-              <div className="method-item">
-                <span><strong>{method.name}</strong> (Sequence: {method.sequence})</span>
-                <p>{method.description}</p>
-                <span>{method.mandatory ? "Mandatory" : "Optional"}</span>
-                <button onClick={() => handleDelete(index)}>Delete</button>
-              </div>
-            </li>
+            <div key={index} className="method-item">
+              <span><strong>{method.name}</strong> (Sequence: {method.sequence})</span>
+              <p>{method.description}</p>
+              <span>{method.mandatory ? "Mandatory" : "Optional"}</span>
+              <button onClick={() => handleDelete(index)}>Delete</button>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

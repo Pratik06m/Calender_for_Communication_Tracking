@@ -128,51 +128,55 @@ const UserDashboard = () => {
       </button>
 
       {showModal && (
-        <div className="modal">
-          <h3>Log New Communication</h3>
-          <form>
-            <label>
-              Type of Communication:
-              <select
-                name="type"
-                value={communicationData.type}
-                onChange={handleModalInputChange}
-              >
-                <option value="LinkedIn Post">LinkedIn Post</option>
-                <option value="Email">Email</option>
-                <option value="Phone Call">Phone Call</option>
-                <option value="LinkedIn Message">LinkedIn Message</option>
-              </select>
-            </label>
+  <>
+    <div className="modal-backdrop"></div>
+    <div className="modal">
+      <h3>Log New Communication</h3>
+      <form>
+        <label>
+          Type of Communication:
+          <select
+            name="type"
+            value={communicationData.type}
+            onChange={handleModalInputChange}
+          >
+            <option value="LinkedIn Post">LinkedIn Post</option>
+            <option value="Email">Email</option>
+            <option value="Phone Call">Phone Call</option>
+            <option value="LinkedIn Message">LinkedIn Message</option>
+          </select>
+        </label>
 
-            <label>
-              Date of Communication:
-              <input
-                type="date"
-                name="date"
-                value={communicationData.date}
-                onChange={handleModalInputChange}
-              />
-            </label>
+        <label>
+          Date of Communication:
+          <input
+            type="date"
+            name="date"
+            value={communicationData.date}
+            onChange={handleModalInputChange}
+          />
+        </label>
 
-            <label>
-              Notes:
-              <textarea
-                name="notes"
-                value={communicationData.notes}
-                onChange={handleModalInputChange}
-              ></textarea>
-            </label>
+        <label>
+          Notes:
+          <textarea
+            name="notes"
+            value={communicationData.notes}
+            onChange={handleModalInputChange}
+          ></textarea>
+        </label>
 
-            <button type="button" onClick={handleSubmitCommunication}>
-              Submit
-            </button>
-            <button type="button" onClick={() => setShowModal(false)}>
-              Cancel
-            </button>
-          </form>
-        </div>
-      )}
+        <button type="button" onClick={handleSubmitCommunication}>
+          Submit
+        </button>
+        <button type="button" onClick={() => setShowModal(false)}>
+          Cancel
+        </button>
+      </form>
+    </div>
+  </>
+)}
+
 
       {/* Floating buttons */}
       <div className="floating-buttons">

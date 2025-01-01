@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// import './Navbar.css';
 
 const Navbar = () => {
   return (
@@ -31,7 +32,7 @@ const styles = {
     marginRight: '20px',
   },
   navLink: {
-    color: '#1e1e2f',
+    color: '#fff', // Changed to white for better visibility
     textDecoration: 'none',
     fontSize: '16px',
   },
