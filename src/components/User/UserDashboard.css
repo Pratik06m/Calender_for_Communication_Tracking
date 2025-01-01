@@ -1,9 +1,10 @@
 /* Updated src/components/UserDashboard.css */
 .dashboard-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
   font-family: Arial, sans-serif;
+  margin: 20px;
+  color: #333;
+  line-height: 1.8;
+  
 }
 
 h2 {
@@ -12,9 +13,13 @@ h2 {
 }
 
 .company-table {
-  width: 100%;
+  width: 80%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-radius: 8px;
+  margin-left: 10%;
 }
 
 .company-table th, .company-table td {
@@ -24,7 +29,23 @@ h2 {
 }
 
 .company-table th {
-  background-color: #f4f4f4;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.company-table td {
+  font-size: 14px;
+}
+
+.company-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.company-table tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
 }
 
 .highlight-red {
@@ -38,6 +59,12 @@ h2 {
 .communication-item {
   position: relative;
   cursor: pointer;
+}
+.addCommButton{
+  width: 50%;
+  margin-top: 10px;
+  margin-left: 25%;
+  text-align: center;
 }
 
 .tooltip {
@@ -75,6 +102,7 @@ button:disabled {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   z-index: 1000; /* In front of the backdrop */
   animation: fadeIn 0.3s ease-in-out;
+  line-height: 1.8;
 }
 
 .modal form {
@@ -119,6 +147,7 @@ button:disabled {
 .modal button[type="button"]:hover {
   background-color: #d32f2f;
 }
+
 /* Add a backdrop with blur effect */
 .modal-backdrop {
   position: fixed;
@@ -130,7 +159,6 @@ button:disabled {
   backdrop-filter: blur(5px);
   z-index: 999; /* Behind the modal */
 }
-
 
 /* Fade-in animation for the modal */
 @keyframes fadeIn {

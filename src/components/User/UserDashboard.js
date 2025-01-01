@@ -121,6 +121,7 @@ const UserDashboard = () => {
       </table>
 
       <button
+        className='addCommButton'
         onClick={() => setShowModal(true)}
         disabled={selectedCompanies.length === 0}
       >
