@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // For navigation
-import "./Login.css";
-import services from "./../utils/config/services.js"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import "./Login.css";
+import services from "./../utils/config/services.js";
 
 function LoginPage() {
   const [activeTab, setActiveTab] = useState("user");
@@ -15,6 +14,7 @@ function LoginPage() {
 
   return (
     <div className="app-container">
+      <ToastContainer />
       <div className="tabs">
         <button
           className={`tab-button ${activeTab === "user" ? "active" : ""}`}
@@ -47,23 +47,19 @@ function UserForm() {
 
   const navigate = useNavigate(); // For navigation to the dashboard
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Registration Validation
     if (isRegister && formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
-    // Prepare API request based on the mode
     const apiUrl = isRegister
       ? `${services.baseURL}/signup/user`
       : `${services.baseURL}/login/user`;
@@ -90,19 +86,18 @@ function UserForm() {
       const data = await response.json();
 
       if (response.ok) {
-        alert(isRegister ? "Registration successful!" : "Login successful!");
+        toast.success(isRegister ? "Registration successful!" : "Login successful!");
         console.log("Response:", data);
 
-        // Navigate to the User Dashboard on successful login
         if (!isRegister) {
           navigate("/user");
         }
       } else {
-        alert(data.message || "Something went wrong!");
+        toast.error(data.message || "Something went wrong!");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to connect to the server!");
+      toast.error("Failed to connect to the server!");
     }
   };
 
@@ -192,17 +187,15 @@ function AdminForm() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Admin Login successful!");
+        toast.success("Admin Login successful!");
         console.log("Response:", data);
-
-        // Redirect to admin dashboard on successful login
         navigate("/admin");
       } else {
-        alert(data.message || "Something went wrong!");
+        toast.error(data.message || "Something went wrong!");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to connect to the server!");
+      toast.error("Failed to connect to the server!");
     }
   };
 
