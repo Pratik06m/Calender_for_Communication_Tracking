@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // For navigation
 import "./Login.css";
+import services from "./../utils/config/services.js"
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function LoginPage() {
   const [activeTab, setActiveTab] = useState("user");
@@ -61,8 +65,8 @@ function UserForm() {
 
     // Prepare API request based on the mode
     const apiUrl = isRegister
-    ? "http://localhost:4000/api/v1/signup/user"
-    : "http://localhost:4000/api/v1/login/user";
+      ? `${services.baseURL}/signup/user`
+      : `${services.baseURL}/login/user`;
 
     const payload = isRegister
       ? {
@@ -160,7 +164,6 @@ function UserForm() {
   );
 }
 
-
 function AdminForm() {
   const [formData, setFormData] = useState({
     email: "",
@@ -177,7 +180,7 @@ function AdminForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/api/v1/admin/login", {
+      const response = await fetch(`${services.baseURL}/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

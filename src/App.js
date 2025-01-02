@@ -12,7 +12,6 @@ const App = () => {
   return (
     <HashRouter>
       {/* <Navbar /> */}
-      <h1>Welcome to Calender Communication Tracker</h1>
       <div>
       <AppRoutes/> 
         <Routes>

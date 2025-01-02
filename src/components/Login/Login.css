@@ -79,4 +79,74 @@
   .toggle-mode:hover {
     text-decoration: none;
   }
+
+
+  /* Custom styles for ToastContainer */
+.Toastify__toast-container {
+  font-family: 'Arial', sans-serif; /* Customize font */
+  font-size: 1rem; /* Customize font size */
+}
+
+/* Customize the position of toast notifications */
+.Toastify__toast-container--top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.Toastify__toast-container--top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.Toastify__toast-container--bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.Toastify__toast-container--bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+/* Customize individual toast */
+.Toastify__toast {
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow */
+  padding: 16px; /* Padding for content */
+  color: #fff; /* Text color */
+}
+
+/* Success toast */
+.Toastify__toast--success {
+  background: linear-gradient(45deg, #28a745, #218838); /* Green gradient */
+}
+
+/* Error toast */
+.Toastify__toast--error {
+  background: linear-gradient(45deg, #dc3545, #c82333); /* Red gradient */
+}
+
+/* Customize close button */
+.Toastify__close-button {
+  color: #fff;
+}
+
+.Toastify__close-button:hover,
+.Toastify__close-button:focus {
+  opacity: 0.8; /* Hover effect */
+}
+
+/* Customize progress bar */
+.Toastify__progress-bar {
+  background: #ffc107; /* Yellow color for progress bar */
+}
+
+.Toastify__progress-bar--success {
+  background: #218838; /* Green for success progress bar */
+}
+
+.Toastify__progress-bar--error {
+  background: #c82333; /* Red for error progress bar */
+}
+
   
