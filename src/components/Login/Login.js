@@ -193,6 +193,7 @@ function AdminForm() {
       if (response.ok) {
         toast.success(data.message || "Admin Login successful!");
         console.log("Response:", data);
+        localStorage.setItem("AdminEmail",formData.email);
         navigate("/admin");
       } else {
         // Display backend error message if available
