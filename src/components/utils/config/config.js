@@ -19,8 +19,10 @@ const constants = {
     logoutErr:"Error logging out"
   },
   apiName: {
-    signup: "/signup/user",
-    login: "/login/user",
+    signupAdmin: "/admin/signup",
+    loginAdmin: "/admin/login",
+    signupUser: "/signup/user",
+    loginUser: "/login/user",
     logout: "/logout/user"
   },
  localStorage: {

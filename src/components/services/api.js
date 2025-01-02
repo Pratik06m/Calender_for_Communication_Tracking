@@ -54,6 +54,23 @@ apiInstance.interceptors.response.use(
   }
 );
 
+const registerAdmin = async (body) => {
+  try {
+    const response = await apiInstance.post(constants.apiName.signupAdmin, body);
+    return response.data ? response.data : response;
+  } catch (error) {
+    return error.data ? error.data : error;
+  }
+};
+
+const loginAdmin = async (body) => {
+  try {
+    const response = await apiInstance.post(constants.apiName.loginAdmin, body);
+    return response.data ? response.data : response;
+  } catch (error) {
+    return error.data ? error.data : error;
+  }
+};
 const registerUser = async (body) => {
   try {
     const response = await apiInstance.post(constants.apiName.signup, body);
@@ -82,6 +99,8 @@ const logoutUser = async () => {
 };
 
 const api = {
+  registerAdmin,
+  loginAdmin,
   registerUser,
   loginUser,
   logoutUser
