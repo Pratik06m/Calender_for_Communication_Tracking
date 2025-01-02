@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import './CompanyManagement.css'; // Ensure the path is correct
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import "./CompanyManagement.css"; // Ensure the path is correct
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CompanyManagement = () => {
   const [companies, setCompanies] = useState([]);
@@ -21,36 +21,36 @@ const CompanyManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  const baseUrl = "https://calendar-application-for-communication.onrender.com/api/v1/company";
+  const baseUrl =
+    "https://calendar-application-for-communication.onrender.com/api/v1/company";
 
-  useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const adminEmail = localStorage.getItem("AdminEmail"); // Get admin email from localStorage
-        if (!adminEmail) {
-          setError("Admin email not found in localStorage");
-          return;
-        }
-
-        // Append the email as a query parameter to the URL
-        const url = `${baseUrl}/get?email=${encodeURIComponent(adminEmail)}`;
-
-        const response = await fetch(url, {
-          method: "GET"
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setCompanies(data); // Set the fetched companies
-        } else {
-          setError("Failed to fetch companies");
-        }
-      } catch (error) {
-        setError("Failed to connect to the server");
-        console.error("Fetch error:", error);
+  const fetchCompanies = async () => {
+    try {
+      const adminEmail = localStorage.getItem("AdminEmail"); // Get admin email from localStorage
+      if (!adminEmail) {
+        setError("Admin email not found in localStorage");
+        return;
       }
-    };
 
+      // Append the email as a query parameter to the URL
+      const url = `${baseUrl}/get?email=${encodeURIComponent(adminEmail)}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCompanies(data); // Set the fetched companies
+      } else {
+        setError("Failed to fetch companies");
+      }
+    } catch (error) {
+      setError("Failed to connect to the server");
+      console.error("Fetch error:", error);
+    }
+  };
+  useEffect(() => {
     fetchCompanies();
   }, []);
 
@@ -86,6 +86,7 @@ const CompanyManagement = () => {
           setCompanies(updatedCompanies);
           setIsEditing(false);
           setCurrentId(null);
+          fetchCompanies();
           toast.success("Company updated successfully!");
         } else {
           setError("Failed to update the company");
@@ -168,9 +169,9 @@ const CompanyManagement = () => {
     <div>
       <h2>Company Management</h2>
       <ToastContainer /> {/* Toast container for notifications */}
-
       <div className="form">
-        {error && <p className="error-message">{error}</p>} {/* Display error */}
+        {error && <p className="error-message">{error}</p>}{" "}
+        {/* Display error */}
         <input
           type="text"
           name="name"
@@ -225,7 +226,6 @@ const CompanyManagement = () => {
           {isEditing ? "Update Company" : "Add Company"}
         </button>
       </div>
-
       <div className="company-list">
         <h3>Companies</h3>
         <ul>
@@ -236,25 +236,25 @@ const CompanyManagement = () => {
               </div>
               <div className="EDbutton">
                 <button onClick={() => editCompany(company.id)}>Edit</button>
-                <button onClick={() => confirmDelete(company.id)}>Delete</button>
+                <button onClick={() => confirmDelete(company.id)}>
+                  Delete
+                </button>
               </div>
             </li>
           ))}
         </ul>
       </div>
-
       {showModal && (
         <div className="modal">
           <div className="modal-content">
             <p>Are you sure you want to delete this company?</p>
             <button onClick={deleteCompany}>Yes</button>
             <button onClick={() => setShowModal(false)}>No</button>
-            </div>
           </div>
-        )}
-      </div>
-    );
-  };
-  
-  export default CompanyManagement;
-  
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CompanyManagement;
