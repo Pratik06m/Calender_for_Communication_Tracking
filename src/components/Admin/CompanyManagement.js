@@ -103,6 +103,7 @@ const CompanyManagement = () => {
         if (response.ok) {
           const addedCompany = await response.json();
           setCompanies([...companies, addedCompany]);
+          fetchCompanies();
           toast.success("Company added successfully!");
         } else {
           setError("Failed to add the company");
@@ -150,6 +151,7 @@ const CompanyManagement = () => {
 
       if (response.ok) {
         setCompanies(companies.filter((company) => company.id !== deleteId));
+        fetchCompanies();
         toast.success("Company deleted successfully!");
       } else {
         setError("Failed to delete the company");
@@ -232,8 +234,11 @@ const CompanyManagement = () => {
           {companies.map((company) => (
             <li key={company.id}>
               <div>
-                <strong>{company.name}</strong> - {company.location}
+                <strong>{company.name}</strong> - {company.location} <br></br>
+                <br></br>
+                <strong>{company.emails}</strong>
               </div>
+              <div>{company.periodicity}</div>
               <div className="EDbutton">
                 <button onClick={() => editCompany(company.id)}>Edit</button>
                 <button onClick={() => confirmDelete(company.id)}>
