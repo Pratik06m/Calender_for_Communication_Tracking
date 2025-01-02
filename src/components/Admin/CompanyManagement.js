@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './CompanyManagement.css'; // Ensure the path is correct
 
 const CompanyManagement = () => {
@@ -11,10 +11,32 @@ const CompanyManagement = () => {
     phoneNumbers: "",
     comments: "",
     periodicity: "2 weeks",
+    adminEmail: localStorage.getItem("AdminEmail"),
   });
   const [isEditing, setIsEditing] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [error, setError] = useState("");
+
+  const baseUrl = "https://calendar-application-for-communication.onrender.com/api/v1/company/add"; // Replace with your API URL
+
+  // Fetch companies on component mount
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch(baseUrl);
+        if (response.ok) {
+          const data = await response.json();
+          setCompanies(data);
+        } else {
+          setError("Failed to fetch companies");
+        }
+      } catch (error) {
+        setError("Failed to connect to the server");
+        console.error(error);
+      }
+    };
+    fetchCompanies();
+  }, []);
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -22,36 +44,64 @@ const CompanyManagement = () => {
   };
 
   // Add or update a company
-  const addCompany = () => {
-    // Validate required fields
+  const addOrUpdateCompany = async () => {
     if (!newCompany.name || !newCompany.location || !newCompany.emails) {
       setError("Name, Location, and Email are required!");
       return;
     }
 
-    // Clear error if validation passes
-    setError("");
+    setError(""); // Clear error
 
-    if (isEditing) {
-      const updatedCompanies = companies.map((company, index) =>
-        index === currentIndex ? newCompany : company
-      );
-      setCompanies(updatedCompanies);
-      setIsEditing(false);
-      setCurrentIndex(null);
-    } else {
-      setCompanies([...companies, newCompany]);
+    try {
+      if (isEditing) {
+        // Update company
+        const response = await fetch(`${baseUrl}/${companies[currentIndex].id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCompany),
+        });
+
+        if (response.ok) {
+          const updatedCompany = await response.json();
+          const updatedCompanies = companies.map((company, index) =>
+            index === currentIndex ? updatedCompany : company
+          );
+          setCompanies(updatedCompanies);
+          setIsEditing(false);
+          setCurrentIndex(null);
+        } else {
+          setError("Failed to update the company");
+        }
+      } else {
+        // Add company
+        const response = await fetch(baseUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCompany),
+        });
+
+        if (response.ok) {
+          const addedCompany = await response.json();
+          setCompanies([...companies, addedCompany]);
+        } else {
+          setError("Failed to add the company");
+        }
+      }
+
+      setNewCompany({
+        name: "",
+        location: "",
+        linkedIn: "",
+        emails: "",
+        phoneNumbers: "",
+        comments: "",
+        periodicity: "2 weeks",
+        adminEmail: localStorage.getItem("AdminEmail"),
+      });
+    } catch (error) {
+      setError("Failed to connect to the server");
+      console.error(error);
     }
-
-    setNewCompany({
-      name: "",
-      location: "",
-      linkedIn: "",
-      emails: "",
-      phoneNumbers: "",
-      comments: "",
-      periodicity: "2 weeks",
-    });
   };
 
   // Edit a company
@@ -62,9 +112,22 @@ const CompanyManagement = () => {
   };
 
   // Delete a company
-  const deleteCompany = (index) => {
-    const filteredCompanies = companies.filter((_, i) => i !== index);
-    setCompanies(filteredCompanies);
+  const deleteCompany = async (index) => {
+    try {
+      const response = await fetch(`${baseUrl}/${companies[index].id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        const filteredCompanies = companies.filter((_, i) => i !== index);
+        setCompanies(filteredCompanies);
+      } else {
+        setError("Failed to delete the company");
+      }
+    } catch (error) {
+      setError("Failed to connect to the server");
+      console.error(error);
+    }
   };
 
   return (
@@ -122,7 +185,7 @@ const CompanyManagement = () => {
           <option value="2 weeks">2 Weeks</option>
           <option value="1 month">1 Month</option>
         </select>
-        <button onClick={addCompany}>
+        <button onClick={addOrUpdateCompany}>
           {isEditing ? "Update Company" : "Add Company"}
         </button>
       </div>
