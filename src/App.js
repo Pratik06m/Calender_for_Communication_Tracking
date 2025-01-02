@@ -1,19 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Shared/Navbar';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import UserDashboard from './components/User/UserDashboard';
 import Notifications from './components/User/Notifications';
 import CalendarView from './components/User/CalenderView';
 import LoginPage from './components/Login/Login';
 import ForgotPassword from './components/Login/ForgotPassword';
+import { AppRoutes } from './routes/AppRoutes';
 
 const App = () => {
   return (
-    <Router>
+    <HashRouter>
       {/* <Navbar /> */}
       <h1>Welcome to Calender Communication Tracker</h1>
       <div>
+      <AppRoutes/> 
         <Routes>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user" element={<UserDashboard />} />
@@ -23,7 +24,7 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </div>
-    </Router>
+    </HashRouter>
   );
 };
 

@@ -61,8 +61,8 @@ function UserForm() {
 
     // Prepare API request based on the mode
     const apiUrl = isRegister
-      ? "https://example.com/api/user/register"
-      : "https://example.com/api/user/login";
+    ? "http://localhost:4000/api/v1/signup/user"
+    : "http://localhost:4000/api/v1/login/user";
 
     const payload = isRegister
       ? {
@@ -91,7 +91,7 @@ function UserForm() {
 
         // Navigate to the User Dashboard on successful login
         if (!isRegister) {
-          navigate("/user-dashboard");
+          navigate("/user");
         }
       } else {
         alert(data.message || "Something went wrong!");
