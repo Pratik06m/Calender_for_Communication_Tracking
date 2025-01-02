@@ -14,29 +14,43 @@ const CompanyManagement = () => {
     adminEmail: localStorage.getItem("AdminEmail"),
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
   const [error, setError] = useState("");
 
-  const baseUrl = "https://calendar-application-for-communication.onrender.com/api/v1/company/add"; // Replace with your API URL
+  const baseUrl = "https://calendar-application-for-communication.onrender.com/api/v1/company";
 
-  // Fetch companies on component mount
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch(baseUrl);
+        const adminEmail = localStorage.getItem("AdminEmail"); // Get admin email from localStorage
+        if (!adminEmail) {
+          setError("Admin email not found in localStorage");
+          return;
+        }
+  
+        // Append the email as a query parameter to the URL
+        const url = `${baseUrl}/get?email=${encodeURIComponent(adminEmail)}`;
+        
+        const response = await fetch(url, {
+          method: "GET"
+        });
+  
         if (response.ok) {
           const data = await response.json();
-          setCompanies(data);
+          setCompanies(data); // Set the fetched companies
         } else {
           setError("Failed to fetch companies");
         }
       } catch (error) {
         setError("Failed to connect to the server");
-        console.error(error);
+        console.error("Fetch error:", error);
       }
     };
+  
     fetchCompanies();
   }, []);
+  
+  
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -55,7 +69,7 @@ const CompanyManagement = () => {
     try {
       if (isEditing) {
         // Update company
-        const response = await fetch(`${baseUrl}/${companies[currentIndex].id}`, {
+        const response = await fetch(`${baseUrl}/${currentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCompany),
@@ -63,18 +77,18 @@ const CompanyManagement = () => {
 
         if (response.ok) {
           const updatedCompany = await response.json();
-          const updatedCompanies = companies.map((company, index) =>
-            index === currentIndex ? updatedCompany : company
+          const updatedCompanies = companies.map((company) =>
+            company.id === currentId ? updatedCompany : company
           );
           setCompanies(updatedCompanies);
           setIsEditing(false);
-          setCurrentIndex(null);
+          setCurrentId(null);
         } else {
           setError("Failed to update the company");
         }
       } else {
         // Add company
-        const response = await fetch(baseUrl, {
+        const response = await fetch(`${baseUrl}/add`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCompany),
@@ -105,22 +119,22 @@ const CompanyManagement = () => {
   };
 
   // Edit a company
-  const editCompany = (index) => {
+  const editCompany = (id) => {
+    const companyToEdit = companies.find((company) => company.id === id);
     setIsEditing(true);
-    setCurrentIndex(index);
-    setNewCompany(companies[index]);
+    setCurrentId(id);
+    setNewCompany(companyToEdit);
   };
 
   // Delete a company
-  const deleteCompany = async (index) => {
+  const deleteCompany = async (id) => {
     try {
-      const response = await fetch(`${baseUrl}/${companies[index].id}`, {
+      const response = await fetch(`${baseUrl}/${id}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        const filteredCompanies = companies.filter((_, i) => i !== index);
-        setCompanies(filteredCompanies);
+        setCompanies(companies.filter((company) => company.id !== id));
       } else {
         setError("Failed to delete the company");
       }
@@ -192,14 +206,14 @@ const CompanyManagement = () => {
       <div className="company-list">
         <h3>Companies</h3>
         <ul>
-          {companies.map((company, index) => (
-            <li key={index}>
+          {companies.map((company) => (
+            <li key={company.id}>
               <div>
                 <strong>{company.name}</strong> - {company.location}
               </div>
               <div className="EDbutton">
-                <button onClick={() => editCompany(index)}>Edit</button>
-                <button onClick={() => deleteCompany(index)}>Delete</button>
+                <button onClick={() => editCompany(company.id)}>Edit</button>
+                <button onClick={() => deleteCompany(company.id)}>Delete</button>
               </div>
             </li>
           ))}
