@@ -33,41 +33,54 @@ function LoginPage() {
 }
 
 function UserForm() {
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(false); // Toggle between Login and Register modes
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
 
+  const navigate = useNavigate(); // For navigation to the dashboard
+
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Registration Validation
     if (isRegister && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    try {
-      const url = isRegister
-        ? "https://example.com/api/user/register"
-        : "https://example.com/api/user/login";
+    // Prepare API request based on the mode
+    const apiUrl = isRegister
+      ? "https://example.com/api/user/register"
+      : "https://example.com/api/user/login";
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
+    const payload = isRegister
+      ? {
+          username: formData.username,
           email: formData.email,
           password: formData.password,
-        }),
+          confirmPassword: formData.confirmPassword,
+        }
+      : {
+          email: formData.email,
+          password: formData.password,
+        };
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -76,9 +89,9 @@ function UserForm() {
         alert(isRegister ? "Registration successful!" : "Login successful!");
         console.log("Response:", data);
 
-        // Redirect to user dashboard on successful login
+        // Navigate to the User Dashboard on successful login
         if (!isRegister) {
-          navigate("/user");
+          navigate("/user-dashboard");
         }
       } else {
         alert(data.message || "Something went wrong!");
@@ -96,9 +109,9 @@ function UserForm() {
         {isRegister && (
           <input
             type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
+            name="username"
+            placeholder="Username"
+            value={formData.username}
             onChange={handleInputChange}
             required
           />
@@ -146,6 +159,7 @@ function UserForm() {
     </div>
   );
 }
+
 
 function AdminForm() {
   const [formData, setFormData] = useState({
