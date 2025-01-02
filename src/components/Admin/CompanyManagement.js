@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './CompanyManagement.css'; // Ensure the path is correct
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CompanyManagement = () => {
   const [companies, setCompanies] = useState([]);
@@ -16,6 +18,8 @@ const CompanyManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const baseUrl = "https://calendar-application-for-communication.onrender.com/api/v1/company";
 
@@ -27,14 +31,14 @@ const CompanyManagement = () => {
           setError("Admin email not found in localStorage");
           return;
         }
-  
+
         // Append the email as a query parameter to the URL
         const url = `${baseUrl}/get?email=${encodeURIComponent(adminEmail)}`;
-        
+
         const response = await fetch(url, {
           method: "GET"
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           setCompanies(data); // Set the fetched companies
@@ -46,11 +50,9 @@ const CompanyManagement = () => {
         console.error("Fetch error:", error);
       }
     };
-  
+
     fetchCompanies();
   }, []);
-  
-  
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -61,6 +63,7 @@ const CompanyManagement = () => {
   const addOrUpdateCompany = async () => {
     if (!newCompany.name || !newCompany.location || !newCompany.emails) {
       setError("Name, Location, and Email are required!");
+      toast.error("Name, Location, and Email are required!");
       return;
     }
 
@@ -69,7 +72,7 @@ const CompanyManagement = () => {
     try {
       if (isEditing) {
         // Update company
-        const response = await fetch(`${baseUrl}/${currentId}`, {
+        const response = await fetch(`${baseUrl}/update/${currentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCompany),
@@ -83,8 +86,10 @@ const CompanyManagement = () => {
           setCompanies(updatedCompanies);
           setIsEditing(false);
           setCurrentId(null);
+          toast.success("Company updated successfully!");
         } else {
           setError("Failed to update the company");
+          toast.error("Failed to update the company");
         }
       } else {
         // Add company
@@ -97,8 +102,10 @@ const CompanyManagement = () => {
         if (response.ok) {
           const addedCompany = await response.json();
           setCompanies([...companies, addedCompany]);
+          toast.success("Company added successfully!");
         } else {
           setError("Failed to add the company");
+          toast.error("Failed to add the company");
         }
       }
 
@@ -114,6 +121,7 @@ const CompanyManagement = () => {
       });
     } catch (error) {
       setError("Failed to connect to the server");
+      toast.error("Failed to connect to the server");
       console.error(error);
     }
   };
@@ -126,27 +134,41 @@ const CompanyManagement = () => {
     setNewCompany(companyToEdit);
   };
 
+  // Open modal for delete confirmation
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowModal(true);
+  };
+
   // Delete a company
-  const deleteCompany = async (id) => {
+  const deleteCompany = async () => {
     try {
-      const response = await fetch(`${baseUrl}/${id}`, {
+      const response = await fetch(`${baseUrl}/delete/${deleteId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        setCompanies(companies.filter((company) => company.id !== id));
+        setCompanies(companies.filter((company) => company.id !== deleteId));
+        toast.success("Company deleted successfully!");
       } else {
         setError("Failed to delete the company");
+        toast.error("Failed to delete the company");
       }
     } catch (error) {
       setError("Failed to connect to the server");
+      toast.error("Failed to connect to the server");
       console.error(error);
+    } finally {
+      setShowModal(false);
+      setDeleteId(null);
     }
   };
 
   return (
     <div>
       <h2>Company Management</h2>
+      <ToastContainer /> {/* Toast container for notifications */}
+
       <div className="form">
         {error && <p className="error-message">{error}</p>} {/* Display error */}
         <input
@@ -203,6 +225,7 @@ const CompanyManagement = () => {
           {isEditing ? "Update Company" : "Add Company"}
         </button>
       </div>
+
       <div className="company-list">
         <h3>Companies</h3>
         <ul>
@@ -213,14 +236,25 @@ const CompanyManagement = () => {
               </div>
               <div className="EDbutton">
                 <button onClick={() => editCompany(company.id)}>Edit</button>
-                <button onClick={() => deleteCompany(company.id)}>Delete</button>
+                <button onClick={() => confirmDelete(company.id)}>Delete</button>
               </div>
             </li>
           ))}
         </ul>
       </div>
-    </div>
-  );
-};
 
-export default CompanyManagement;
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>Are you sure you want to delete this company?</p>
+            <button onClick={deleteCompany}>Yes</button>
+            <button onClick={() => setShowModal(false)}>No</button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  export default CompanyManagement;
+  
