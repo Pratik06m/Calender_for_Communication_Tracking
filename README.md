@@ -1,5 +1,7 @@
 # Calendar Application for Communication Tracking
 
+## Live Link: https://superlative-mochi-20c576.netlify.app/
+
 ## Objective
 The purpose of this project is to develop a React-based calendar application that helps maintain and track communications with different companies. The goal is to ensure timely follow-ups and manage the frequency of engagements based on pre-defined schedules. The application consists of three primary modules:
 
