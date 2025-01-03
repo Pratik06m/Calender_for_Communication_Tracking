@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# Calendar Application for Communication Tracking
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Objective
+The purpose of this project is to develop a React-based calendar application that helps maintain and track communications with different companies. The goal is to ensure timely follow-ups and manage the frequency of engagements based on pre-defined schedules. The application consists of three primary modules:
 
-## Available Scripts
+1. Admin Module for managing companies and communication parameters.
+2. User Module for managing and performing communication tasks.
 
-In the project directory, you can run:
+## Table of Contents
+1. Features
+2. Installation
+3. Deployment
+4. Usage
+5. Testing
+6. Known Limitations
+7. Contributions
+8. Licenses
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Admin Module
+Company Management: Add, edit, and delete companies with details like name, location, LinkedIn profile, emails, phone numbers, comments, and communication periodicity.
 
-### `npm test`
+Communication Method Management: Define communication methods like LinkedIn Post, LinkedIn Message, Email, Phone Call, and others. Set the sequence and mandatory flags for communication steps.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### User Module
+Dashboard: View and manage companies with a summary of the last five communications and the next scheduled communication.
 
-### `npm run build`
+Color-Coded Highlights: Red highlights for overdue communications, yellow for communications due today. Users can override or disable these highlights.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Communication Action: Log new communications by selecting the company and communication type (e.g., LinkedIn Post, Email), and input additional notes.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Notifications: View grids for overdue and today's communications with a badge count.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Calendar View: A calendar interface to manage past and upcoming communications.
 
-### `npm run eject`
+### Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Clone the repository:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+git clone https://github.com/your-username/calendar-communication-tracking.git
+cd calendar-communication-tracking
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Install dependencies:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+npm install
 
-## Learn More
+3. Set up environment variables if required. Create a .env file in the root directory with the necessary configuration (e.g., API keys, database credentials).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4. Start the application locally:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+npm start
+The application will run on http://localhost:3000.
 
 ### Deployment
+This project is deployed on Vercel for live access.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+You can view the live application here: https://your-app.vercel.app.
 
-### `npm run build` fails to minify
+### Usage
+Once the application is running, users can:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Admin users can manage companies and communication methods through the admin dashboard.
+
+Users can track communications, log interactions, and view upcoming engagements in the user dashboard.
+
+The calendar view allows users to visualize and manage communication schedules.
+
+### Testing
+We ensured the application runs smoothly by performing the following tests:
+
+Functional testing of all features, such as adding/editing companies, communication logging, and dashboard actions.
+
+Usability testing to ensure the user interface is intuitive and easy to navigate.
+
+Performance testing to check for smooth rendering and data handling.
+
+Test data has been provided for the evaluation, including mock companies, communication methods, and schedules.
+
+### Known Limitations
+The Reporting and Analytics Module is optional and not implemented in the initial version. However, it can be integrated in future versions.
+
+The application does not currently support multi-language localization.
+Notifications rely on periodic checks, so there may be a slight delay in reflecting updates in the communication status.
+
+### Contributions
+Feel free to fork this repository, contribute, and raise issues. Contributions are welcome!
+
+### Licenses
+This project is licensed under the MIT License - see the LICENSE file for details.
