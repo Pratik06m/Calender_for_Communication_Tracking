@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import "./CommunicationMethodManagement.css";
+import { toast } from "react-toastify";
 
 const CommunicationMethodManagement = () => {
   const [methods, setMethods] = useState([]);
-  const [newMethod, setNewMethod] = useState({
-    name: "",
-    description: "",
-    sequence: "",
-    mandatory: false,
-    adminEmail: localStorage.getItem("AdminEmail"),
-  });
-  const [showModal, setShowModal] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+  const [currentMethod, setCurrentMethod] = useState(null); // For add/edit modal
+  const [showModal, setShowModal] = useState(false); // For add/edit modal
+  const [deleteId, setDeleteId] = useState(null); // For delete confirmation modal
 
   const API_BASE_URL =
     "https://calendar-application-for-communication.onrender.com/api/v1/communication/methods";
@@ -25,19 +18,23 @@ const CommunicationMethodManagement = () => {
         toast.error("Admin email not found in localStorage");
         return;
       }
-      const response = await fetch(`${API_BASE_URL}?email=${encodeURIComponent(adminEmail)}`);
+      const response = await fetch(
+        `${API_BASE_URL}?email=${encodeURIComponent(adminEmail)}`
+      );
       if (response.ok) {
-        const responseData = await response.json(); // Parse the response JSON
+        const responseData = await response.json();
         if (responseData.success) {
-          setMethods(responseData.data); // Set the `data` array to the state
+          setMethods(responseData.data);
         } else {
-          toast.error(responseData.message || "Failed to load communication methods.");
+          toast.error(
+            responseData.message || "Failed to load communication methods."
+          );
         }
       } else {
         toast.error("Failed to load communication methods.");
       }
     } catch (error) {
-      toast.error("Failed to connect to the server");
+      toast.error("Failed to connect to the server.");
     }
   };
 
@@ -47,71 +44,55 @@ const CommunicationMethodManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewMethod({
-      ...newMethod,
+    setCurrentMethod((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
+  };
+
+  const openModal = (method = null) => {
+    setCurrentMethod(
+      method || {
+        name: "",
+        description: "",
+        sequence: methods.length + 1,
+        mandatory: false,
+        adminEmail: localStorage.getItem("AdminEmail"),
+      }
+    );
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setCurrentMethod(null);
   };
 
   const addOrUpdateMethod = async () => {
-    if (!newMethod.name.trim()) {
-      toast.error("Method Name is required.");
-      return;
-    }
-
-    // Ensure sequence is a valid number
-    const sequence = newMethod.sequence || methods.length + 1; // Default to length + 1 if empty
-    if (isNaN(sequence)) {
-      toast.error("Sequence must be a valid number.");
-      return;
-    }
 
     try {
-      const adminEmail = localStorage.getItem("AdminEmail");
+    
+      const url =API_BASE_URL;
+      const methodType = "POST";
 
-      // Adding method locally without backend interaction
-      if (!adminEmail) {
-        setMethods([
-          ...methods,
-          {
-            ...newMethod,
-            sequence: parseInt(sequence), // Make sure sequence is an integer
-          },
-        ]);
-        setNewMethod({
-          name: "",
-          description: "",
-          sequence: "",
-          mandatory: false,
-        });
-        toast.success("Communication method added locally.");
-        return;
-      }
-
-      // Backend interaction for adding method
-      const response = await fetch(API_BASE_URL, {
-        method: "POST",
+      const response = await fetch(url, {
+        method: methodType,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...newMethod,
-          adminEmail,
-          sequence: parseInt(sequence), // Send sequence as an integer
+          ...currentMethod,
+          sequence: parseInt(currentMethod.sequence), // Ensure sequence is an integer
         }),
       });
 
       if (response.ok) {
-        const addedMethod = await response.json();
-        setMethods([...methods, addedMethod]);
-        toast.success("Communication method added successfully.");
+        toast.success(
+
+        "Method added successfully."
+        );
         fetchMethods();
-        setNewMethod({
-          name: "",
-          description: "",
-          sequence: "",
-          mandatory: false,
-        });
+        closeModal();
       } else {
-        toast.error("Failed to add communication method.");
+        toast.error("Failed to save communication method.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -121,7 +102,7 @@ const CommunicationMethodManagement = () => {
 
   const confirmDelete = (id) => {
     setDeleteId(id);
-    setShowModal(true);
+    setShowModal(false); // Close add/edit modal if open
   };
 
   const deleteMethod = async () => {
@@ -139,41 +120,13 @@ const CommunicationMethodManagement = () => {
     } catch (error) {
       toast.error("Failed to connect to the server.");
     } finally {
-      setShowModal(false);
       setDeleteId(null);
     }
   };
 
   return (
     <div>
-      <ToastContainer />
       <h2>Communication Method Management</h2>
-
-      <div className="form">
-        <input
-          type="text"
-          name="name"
-          placeholder="Method Name"
-          value={newMethod.name}
-          onChange={handleInputChange}
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={newMethod.description}
-          onChange={handleInputChange}
-        />
-        <label>
-          <input
-            type="checkbox"
-            name="mandatory"
-            checked={newMethod.mandatory}
-            onChange={handleInputChange}
-          />
-          Mandatory
-        </label>
-        <button onClick={addOrUpdateMethod}>Add Method</button>
-      </div>
 
       <div className="method-list">
         <h3>Existing Communication Methods</h3>
@@ -195,12 +148,69 @@ const CommunicationMethodManagement = () => {
         )}
       </div>
 
-      {showModal && (
+      <button className="add-method-btn" onClick={() => openModal()}>
+        + Add Method
+      </button>
+
+      {/* Add/Edit Modal */}
+      {showModal && currentMethod && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>{currentMethod.id ? "Edit Method" : "Add New Method"}</h3>
+            <select
+              type="text"
+              name="name"
+              placeholder="Method Name"
+              value={currentMethod.name}
+              onChange={handleInputChange}
+            >
+              <option value="Select">Select</option>
+              <option value="LinkedIn Post">LinkedIn Post</option>
+              <option value="LinkedIn Message">LinkedIn Message</option>
+              <option value="Email">Email</option>
+              <option value="Phone Call">Phone Call</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={currentMethod.description}
+              onChange={handleInputChange}
+            />
+            <input
+              type="number"
+              name="sequence"
+              placeholder="Sequence"
+              value={currentMethod.sequence}
+              onChange={handleInputChange}
+            />
+            <label>
+              <input
+                type="checkbox"
+                name="mandatory"
+                checked={currentMethod.mandatory}
+                onChange={handleInputChange}
+              />
+              Mandatory
+            </label>
+            <div className="modal-actions">
+              <button onClick={addOrUpdateMethod}>Save</button>
+              <button onClick={closeModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteId && (
         <div className="modal">
           <div className="modal-content">
             <p>Are you sure you want to delete this communication method?</p>
-            <button onClick={deleteMethod}>Yes</button>
-            <button onClick={() => setShowModal(false)}>No</button>
+            <div className="modal-actions">
+              <button onClick={deleteMethod}>Yes</button>
+              <button onClick={() => setDeleteId(null)}>No</button>
+            </div>
           </div>
         </div>
       )}
