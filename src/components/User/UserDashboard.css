@@ -4,7 +4,6 @@
   margin: 20px;
   color: #333;
   line-height: 1.8;
-  
 }
 
 h2 {
@@ -60,7 +59,8 @@ h2 {
   position: relative;
   cursor: pointer;
 }
-.addCommButton{
+
+.addCommButton {
   width: 50%;
   margin-top: 10px;
   margin-left: 25%;
@@ -172,16 +172,17 @@ button:disabled {
   }
 }
 
-/* Floating buttons */
-.floating-buttons {
+/* Updated floating buttons at the top */
+.navbar-buttons {
   position: fixed;
-  bottom: 20px;
+  top: 10px;
   right: 20px;
   display: flex;
   gap: 10px;
+  z-index: 100; /* Navbar style */
 }
 
-.floating-button {
+.navbar-button {
   width: 50px;
   height: 50px;
   border: none;
@@ -196,7 +197,7 @@ button:disabled {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.floating-button:hover {
+.navbar-button:hover {
   background-color: #0056b3;
 }
 

@@ -17,7 +17,44 @@ const sampleData = [
     nextCommunication: { type: 'Phone Call', date: '30th September' },
     lastCommunicationDate: '25th September',
   },
-  // Add more company data as needed
+  {
+    companyName: 'Innovative Solutions',
+    recentCommunications: [
+      { type: 'Phone Call', date: '12th October', notes: 'Introductory call' },
+      { type: 'Email', date: '20th October', notes: 'Follow-up on intro call' },
+      { type: 'LinkedIn Message', date: '25th October', notes: 'Discussing opportunities' },
+    ],
+    nextCommunication: { type: 'LinkedIn Post', date: '5th November' },
+    lastCommunicationDate: '25th October',
+  },
+  {
+    companyName: 'Future Tech Enterprises',
+    recentCommunications: [
+      { type: 'Email', date: '15th November', notes: 'Initial proposal' },
+      { type: 'Phone Call', date: '18th November', notes: 'Follow-up on proposal' },
+      { type: 'LinkedIn Message', date: '22nd November', notes: 'Setting up meeting' },
+    ],
+    nextCommunication: { type: 'Phone Call', date: '28th November' },
+    lastCommunicationDate: '22nd November',
+  },
+  {
+    companyName: 'Creative Labs',
+    recentCommunications: [
+      { type: 'LinkedIn Post', date: '30th November', notes: 'Initial connection' },
+      { type: 'Phone Call', date: '3rd December', notes: 'Discussing project scope' },
+    ],
+    nextCommunication: { type: 'Email', date: '10th December' },
+    lastCommunicationDate: '3rd December',
+  },
+  {
+    companyName: 'Global Enterprises',
+    recentCommunications: [
+      { type: 'Email', date: '15th December', notes: 'Initial outreach' },
+      { type: 'Phone Call', date: '20th December', notes: 'Follow-up call' },
+    ],
+    nextCommunication: { type: 'LinkedIn Message', date: '30th December' },
+    lastCommunicationDate: '20th December',
+  },
 ];
 
 const UserDashboard = () => {
@@ -49,7 +86,6 @@ const UserDashboard = () => {
 
   // Submit communication and reset highlights
   const handleSubmitCommunication = () => {
-    // Reset highlight logic here
     setShowModal(false);
     setCommunicationData({
       type: '',
@@ -129,68 +165,62 @@ const UserDashboard = () => {
       </button>
 
       {showModal && (
-  <>
-    <div className="modal-backdrop"></div>
-    <div className="modal">
-      <h3>Log New Communication</h3>
-      <form>
-        <label>
-          Type of Communication:
-          <select
-            name="type"
-            value={communicationData.type}
-            onChange={handleModalInputChange}
-          >
-            <option value="LinkedIn Post">LinkedIn Post</option>
-            <option value="Email">Email</option>
-            <option value="Phone Call">Phone Call</option>
-            <option value="LinkedIn Message">LinkedIn Message</option>
-          </select>
-        </label>
+        <>
+          <div className="modal-backdrop"></div>
+          <div className="modal">
+            <h3>Log New Communication</h3>
+            <form>
+              <label>
+                Type of Communication:
+                <select
+                  name="type"
+                  value={communicationData.type}
+                  onChange={handleModalInputChange}
+                >
+                  <option value="LinkedIn Post">LinkedIn Post</option>
+                  <option value="Email">Email</option>
+                  <option value="Phone Call">Phone Call</option>
+                  <option value="LinkedIn Message">LinkedIn Message</option>
+                </select>
+              </label>
 
-        <label>
-          Date of Communication:
-          <input
-            type="date"
-            name="date"
-            value={communicationData.date}
-            onChange={handleModalInputChange}
-          />
-        </label>
+              <label>
+                Date of Communication:
+                <input
+                  type="date"
+                  name="date"
+                  value={communicationData.date}
+                  onChange={handleModalInputChange}
+                />
+              </label>
 
-        <label>
-          Notes:
-          <textarea
-            name="notes"
-            value={communicationData.notes}
-            onChange={handleModalInputChange}
-          ></textarea>
-        </label>
+              <label>
+                Notes:
+                <textarea
+                  name="notes"
+                  value={communicationData.notes}
+                  onChange={handleModalInputChange}
+                ></textarea>
+              </label>
 
-        <button type="button" onClick={handleSubmitCommunication}>
-          Submit
+              <button type="button" onClick={handleSubmitCommunication}>
+                Submit
+              </button>
+              <button type="button" onClick={() => setShowModal(false)}>
+                Cancel
+              </button>
+            </form>
+          </div>
+        </>
+      )}
+
+      {/* Updated Navbar Floating Buttons */}
+      <div className="navbar-buttons">
+        <button className="navbar-button notification-button" onClick={handleNotificationClick} title="Notifications">
+          <i className="fas fa-bell"></i>
         </button>
-        <button type="button" onClick={() => setShowModal(false)}>
-          Cancel
-        </button>
-      </form>
-    </div>
-  </>
-)}
-
-
-      {/* Floating buttons */}
-      <div className="floating-buttons">
-        {/* Notification Button */}
-        <button className="floating-button notification-button" title="Notifications" onClick={handleNotificationClick}>
-          <i className="fas fa-bell"></i> {/* Font Awesome Notification Icon */}
-          <span className="notification-badge">5</span>
-        </button>
-
-
-        {/* Calendar Button */}
-        <button className="floating-button calendar-button" title="Calendar" onClick={handleCalendarClick} >
-          <i className="fas fa-calendar-alt"></i> {/* Font Awesome Calendar Icon */}
+        <button className="navbar-button calendar-button" onClick={handleCalendarClick} title="Calendar">
+          <i className="fas fa-calendar-alt"></i>
         </button>
       </div>
     </div>

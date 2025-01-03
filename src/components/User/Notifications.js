@@ -1,113 +1,66 @@
-// src/components/Notifications.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import './Notifications.css';
 
-// Sample data for companies and communications
-const sampleData = [
-  {
-    companyName: 'Tech Innovators',
-    recentCommunications: [
-      { type: 'LinkedIn Post', date: '5th September', notes: 'Initial outreach' },
-      { type: 'Email', date: '10th September', notes: 'Follow up on LinkedIn post' },
-      { type: 'Phone Call', date: '15th September', notes: 'Discussed project details' },
-      { type: 'LinkedIn Message', date: '20th September', notes: 'Project update' },
-      { type: 'Email', date: '25th September', notes: 'Final follow up' },
-    ],
-    nextCommunication: { type: 'Phone Call', date: '30th September' },
-  },
-  {
-    companyName: 'GreenTech',
-    recentCommunications: [
-      { type: 'LinkedIn Post', date: '1st October', notes: 'Introduction to new project' },
-      { type: 'Email', date: '5th October', notes: 'Detailed project brief' },
-    ],
-    nextCommunication: { type: 'Phone Call', date: '10th October' },
-  },
-  // Add more company data as needed
-];
+const NotificationPage = () => {
+  const [notifications] = useState([
+    { id: 1, company: "Company A", task: "Follow-up on proposal", dueDate: "2025-01-03", overdue: true },
+    { id: 2, company: "Company B", task: "Send invoice", dueDate: "2025-01-03", overdue: false },
+    { id: 3, company: "Company C", task: "Check project status", dueDate: "2025-01-03", overdue: false },
+    { id: 4, company: "Company D", task: "Submit report", dueDate: "2025-01-02", overdue: true },
+    { id: 5, company: "Company E", task: "Schedule meeting", dueDate: "2025-01-03", overdue: false }
+  ]);
 
-const Notifications = () => {
-  const [overdueCompanies, setOverdueCompanies] = useState([]);
-  const [dueTodayCompanies, setDueTodayCompanies] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0);
-
-  // Helper function to check for overdue or due today communication
-  const checkCommunicationStatus = () => {
-    const currentDate = new Date();
-    let overdue = [];
-    let dueToday = [];
-
-    sampleData.forEach((company) => {
-      const nextCommunicationDate = new Date(company.nextCommunication.date);
-      const diffInTime = nextCommunicationDate - currentDate;
-      if (diffInTime < 0) {
-        overdue.push(company);
-      } else if (diffInTime <= 86400000) {
-        dueToday.push(company);
-      }
-    });
-
-    setOverdueCompanies(overdue);
-    setDueTodayCompanies(dueToday);
-    setNotificationCount(overdue.length + dueToday.length);
-  };
-
-  useEffect(() => {
-    checkCommunicationStatus();
-  }, []);
+  // Function to get today's date in the format YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="notifications-container">
+    <div className="notification-container">
       <div className="notifications-header">
-        <h2>Notifications</h2>
-        <div className="notification-icon">
-          <span>{notificationCount}</span>
+        <h1>Notifications</h1>
+        <div className="notification-badge">
+          {notifications.filter((notif) => notif.dueDate === today || notif.overdue).length}
         </div>
       </div>
 
-      <div className="notification-grid">
-        <div className="grid-item">
-          <h3>Overdue Communications</h3>
-          <table className="notification-table">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Next Communication</th>
+      <div className="notifications-grid">
+        <h2>Overdue Communications</h2>
+        <table className="notification-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Task</th>
+            </tr>
+          </thead>
+          <tbody>
+            {notifications.filter((notif) => notif.overdue).map((notif) => (
+              <tr key={notif.id} className="overdue">
+                <td>{notif.company}</td>
+                <td>{notif.task} (Due: {notif.dueDate})</td>
               </tr>
-            </thead>
-            <tbody>
-              {overdueCompanies.map((company, index) => (
-                <tr key={index}>
-                  <td>{company.companyName}</td>
-                  <td>{company.nextCommunication.type} - {company.nextCommunication.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
 
-        <div className="grid-item">
-          <h3>Today's Communications</h3>
-          <table className="notification-table">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Next Communication</th>
+        <h2>Today's Communications</h2>
+        <table className="notification-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Task</th>
+            </tr>
+          </thead>
+          <tbody>
+            {notifications.filter((notif) => notif.dueDate === today).map((notif) => (
+              <tr key={notif.id} className="due-today">
+                <td>{notif.company}</td>
+                <td>{notif.task} (Due: {notif.dueDate})</td>
               </tr>
-            </thead>
-            <tbody>
-              {dueTodayCompanies.map((company, index) => (
-                <tr key={index}>
-                  <td>{company.companyName}</td>
-                  <td>{company.nextCommunication.type} - {company.nextCommunication.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 };
 
-export default Notifications;
+export default NotificationPage;
