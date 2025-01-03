@@ -12,41 +12,34 @@ const CommunicationMethodManagement = () => {
     mandatory: false,
     adminEmail: localStorage.getItem("AdminEmail"),
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
   const API_BASE_URL =
     "https://calendar-application-for-communication.onrender.com/api/v1/communication/methods";
 
-    const fetchMethods = async () => {
-      try {
-        const adminEmail = localStorage.getItem("AdminEmail");
-        if (!adminEmail) {
-          setError("Admin email not found in localStorage");
-          return;
-        }
-        const response = await fetch(`${API_BASE_URL}?email=${encodeURIComponent(adminEmail)}`);
-        if (response.ok) {
-          const responseData = await response.json(); // Parse the response JSON
-          if (responseData.success) {
-            setMethods(responseData.data); // Set the `data` array to the state
-          } else {
-            setError(responseData.message || "Failed to fetch methods");
-            toast.error(responseData.message || "Failed to load communication methods.");
-          }
-        } else {
-          setError("Failed to fetch methods");
-          toast.error("Failed to load communication methods.");
-        }
-      } catch (error) {
-        setError("Failed to connect to the server");
-        toast.error("Failed to connect to the server");
+  const fetchMethods = async () => {
+    try {
+      const adminEmail = localStorage.getItem("AdminEmail");
+      if (!adminEmail) {
+        toast.error("Admin email not found in localStorage");
+        return;
       }
-    };
-    
+      const response = await fetch(`${API_BASE_URL}?email=${encodeURIComponent(adminEmail)}`);
+      if (response.ok) {
+        const responseData = await response.json(); // Parse the response JSON
+        if (responseData.success) {
+          setMethods(responseData.data); // Set the `data` array to the state
+        } else {
+          toast.error(responseData.message || "Failed to load communication methods.");
+        }
+      } else {
+        toast.error("Failed to load communication methods.");
+      }
+    } catch (error) {
+      toast.error("Failed to connect to the server");
+    }
+  };
 
   useEffect(() => {
     fetchMethods();
@@ -57,7 +50,6 @@ const CommunicationMethodManagement = () => {
     setNewMethod({
       ...newMethod,
       [name]: type === "checkbox" ? checked : value,
-      
     });
   };
 
@@ -66,17 +58,17 @@ const CommunicationMethodManagement = () => {
       toast.error("Method Name is required.");
       return;
     }
-  
+
     // Ensure sequence is a valid number
     const sequence = newMethod.sequence || methods.length + 1; // Default to length + 1 if empty
     if (isNaN(sequence)) {
       toast.error("Sequence must be a valid number.");
       return;
     }
-  
+
     try {
       const adminEmail = localStorage.getItem("AdminEmail");
-  
+
       // Adding method locally without backend interaction
       if (!adminEmail) {
         setMethods([
@@ -95,7 +87,7 @@ const CommunicationMethodManagement = () => {
         toast.success("Communication method added locally.");
         return;
       }
-  
+
       // Backend interaction for adding method
       const response = await fetch(API_BASE_URL, {
         method: "POST",
@@ -106,7 +98,7 @@ const CommunicationMethodManagement = () => {
           sequence: parseInt(sequence), // Send sequence as an integer
         }),
       });
-  
+
       if (response.ok) {
         const addedMethod = await response.json();
         setMethods([...methods, addedMethod]);
@@ -126,8 +118,7 @@ const CommunicationMethodManagement = () => {
       toast.error("Failed to connect to the server.");
     }
   };
-  
-  
+
   const confirmDelete = (id) => {
     setDeleteId(id);
     setShowModal(true);
@@ -181,9 +172,7 @@ const CommunicationMethodManagement = () => {
           />
           Mandatory
         </label>
-        <button onClick={addOrUpdateMethod}>
-          {isEditing ? "Update Method" : "Add Method"}
-        </button>
+        <button onClick={addOrUpdateMethod}>Add Method</button>
       </div>
 
       <div className="method-list">
