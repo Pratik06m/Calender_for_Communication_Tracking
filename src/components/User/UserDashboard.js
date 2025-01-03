@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './UserDashboard.css';
 import { useNavigate } from "react-router-dom";
+import { Bell, Calendar } from 'lucide-react';
 
 // Sample data for companies and communications
 const sampleData = [
@@ -217,10 +218,10 @@ const UserDashboard = () => {
       {/* Updated Navbar Floating Buttons */}
       <div className="navbar-buttons">
         <button className="navbar-button notification-button" onClick={handleNotificationClick} title="Notifications">
-          <i className="fas fa-bell"></i>
+              <Bell />
         </button>
         <button className="navbar-button calendar-button" onClick={handleCalendarClick} title="Calendar">
-          <i className="fas fa-calendar-alt"></i>
+        <Calendar />
         </button>
       </div>
     </div>

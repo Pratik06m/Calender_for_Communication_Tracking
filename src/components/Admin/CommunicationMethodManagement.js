@@ -44,10 +44,29 @@ const CommunicationMethodManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setCurrentMethod((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+    // Map method names to their sequences
+    const methodSequenceMap = {
+      "LinkedIn Post": 1,
+      "LinkedIn Message": 2,
+      Email: 3,
+      "Phone Call": 4,
+      Other: 5,
+    };
+
+    setCurrentMethod((prev) => {
+      const updatedMethod = {
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      };
+
+      // Update the sequence based on the selected method name
+      if (name === "name" && methodSequenceMap[value] !== undefined) {
+        updatedMethod.sequence = methodSequenceMap[value];
+      }
+
+      return updatedMethod;
+    });
   };
 
   const openModal = (method = null) => {
@@ -69,10 +88,8 @@ const CommunicationMethodManagement = () => {
   };
 
   const addOrUpdateMethod = async () => {
-
     try {
-    
-      const url =API_BASE_URL;
+      const url = API_BASE_URL;
       const methodType = "POST";
 
       const response = await fetch(url, {
@@ -85,10 +102,7 @@ const CommunicationMethodManagement = () => {
       });
 
       if (response.ok) {
-        toast.success(
-
-        "Method added successfully."
-        );
+        toast.success("Method added successfully.");
         fetchMethods();
         closeModal();
       } else {
