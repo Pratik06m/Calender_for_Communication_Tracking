@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // For navigation
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast, Toaster } from "react-hot-toast";
 import "./Login.css";
 import services from "./../utils/config/services.js";
 
@@ -14,16 +13,19 @@ function LoginPage() {
 
   return (
     <div className="app-container">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="tabs">
         <button
           className={`tab-button ${activeTab === "user" ? "active" : ""}`}
           onClick={() => handleTabSwitch("user")}
+          id="userTab"
         >
           User Login
         </button>
         <button
           className={`tab-button ${activeTab === "admin" ? "active" : ""}`}
           onClick={() => handleTabSwitch("admin")}
+          id="adminTab"
         >
           Admin Login
         </button>
@@ -75,6 +77,15 @@ function UserForm() {
           password: formData.password,
         };
 
+        toast(
+          "Sorry for the inconvenience, but our backend is currently on render.com Sometimes it gives late response. Please try again in 30 seconds.",
+          {
+            duration: 6000,
+          }
+        );
+    const loadingToast = toast.loading("Processing...");
+
+
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -85,23 +96,18 @@ function UserForm() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(data.message || (isRegister ? "Registration successful!" : "Login successful!"));
-        console.log("Response:", data);
-
+        toast.success(data.message || (isRegister ? "Registration successful!" : "Login successful!"), {
+          id: loadingToast,
+        });
         if (!isRegister) {
           navigate("/user");
         }
       } else {
-        // Display backend error message if available
-        if (data.message) {
-          toast.error(data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
+        toast.error(data.message || "Something went wrong!", { id: loadingToast });
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to connect to the server!");
+      toast.error("Failed to connect to the server!", { id: loadingToast });
     }
   };
 
@@ -117,6 +123,8 @@ function UserForm() {
             value={formData.username}
             onChange={handleInputChange}
             required
+            className="input-field"
+            id="usernameInput"
           />
         )}
         <input
@@ -126,6 +134,8 @@ function UserForm() {
           value={formData.email}
           onChange={handleInputChange}
           required
+          className="input-field"
+          id="emailInput"
         />
         <input
           type="password"
@@ -134,6 +144,8 @@ function UserForm() {
           value={formData.password}
           onChange={handleInputChange}
           required
+          className="input-field"
+          id="passwordInput"
         />
         {isRegister && (
           <input
@@ -143,18 +155,23 @@ function UserForm() {
             value={formData.confirmPassword}
             onChange={handleInputChange}
             required
+            className="input-field"
+            id="confirmPasswordInput"
           />
         )}
         <div className="form-options">
-          <a href="/forgot-password">Forgot your password?</a>
+          <a href="/forgot-password" id="forgotPasswordLink">Forgot your password?</a>
         </div>
-        <button type="submit">{isRegister ? "Register" : "Log In"}</button>
+        <button type="submit" className="submit-button" id="userSubmitButton">
+          {isRegister ? "Register" : "Log In"}
+        </button>
       </form>
       <p>
         {isRegister ? "Already have an account? " : "Don’t have an account? "}
         <span
           className="toggle-mode"
           onClick={() => setIsRegister(!isRegister)}
+          id="toggleModeUser"
         >
           {isRegister ? "Log In" : "Register"}
         </span>
@@ -178,6 +195,14 @@ function AdminForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    toast(
+      "Sorry for the inconvenience, but our backend is currently on render.com Sometimes it gives late response. Please try again in 30 seconds.",
+      {
+        duration: 6000,
+      }
+    );
+    const loadingToast = toast.loading("Processing...");
+
     try {
       const response = await fetch(`${services.baseURL}/admin/login`, {
         method: "POST",
@@ -191,21 +216,15 @@ function AdminForm() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(data.message || "Admin Login successful!");
-        console.log("Response:", data);
-        localStorage.setItem("AdminEmail",formData.email);
+        toast.success(data.message || "Admin Login successful!", { id: loadingToast });
+        localStorage.setItem("AdminEmail", formData.email);
         navigate("/admin");
       } else {
-        // Display backend error message if available
-        if (data.message) {
-          toast.error(data.message);
-        } else {
-          toast.error("Something went wrong!");
-        }
+        toast.error(data.message || "Something went wrong!", { id: loadingToast });
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to connect to the server!");
+      toast.error("Failed to connect to the server!", { id: loadingToast });
     }
   };
 
@@ -220,6 +239,8 @@ function AdminForm() {
           value={formData.email}
           onChange={handleInputChange}
           required
+          className="input-field"
+          id="adminEmailInput"
         />
         <input
           type="password"
@@ -228,11 +249,15 @@ function AdminForm() {
           value={formData.password}
           onChange={handleInputChange}
           required
+          className="input-field"
+          id="adminPasswordInput"
         />
         <div className="form-options">
-          <a href="/forgot-password">Forgot your password?</a>
+          <a href="/forgot-password" id="forgotPasswordLinkAdmin">Forgot your password?</a>
         </div>
-        <button type="submit">Log In</button>
+        <button type="submit" className="submit-button" id="adminSubmitButton">
+          Log In
+        </button>
       </form>
     </div>
   );
